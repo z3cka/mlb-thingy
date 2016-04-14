@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>atdprn</title>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/semantic-ui/2.1.8/semantic.min.css">
+  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/semantic-ui/2.1.8/semantic.min.js"></script>
+  <script src="http://stevenlevithan.com/assets/misc/date.format.js"></script>
+</head>
+<body>
+<div class="ui vertical center aligned container">
+  <h1>Are the Dodgers playing right now?</h1>
+  <div id="playing-now">good question, checking...</div>
+
+  <script id="playing-now-template" type="x-tmpl-mustache">
+    <h2 id="playing-now-status">{{ playing_now }}</h2>
+    <div class="ui hidden divider"></div>
+    <div>
+      They play next in <strong><span id="game-location">loading location...</span></strong> at <strong><span id="game-time">loading time...</span></strong>.
+    </div>
+    <div>
+      And hey, they won yesterday <strong><span id="yesterday-score-away">...</span> - <span id="yesterday-score-home">...</span></strong> over the <strong><span id="yesterday-game-opponent">...</span></strong>.
+    </div>
+  </script>
+
+</div>
+<div class="ui hidden divider"></div>
+<div class="ui vertical center aligned container">
+  <h2>Here are some other not as good games happening today:</h2>
+  <div id="other-games" class="ui four column doubling stackable grid container">
+    Loading other stupid games...
+  </div>
+</div>
+
+<script id="other-games-template" type="x-tmpl-mustache">
+  {{ #game }}
+    <div class="column">
+      <div>{{ away_team_name }} @ {{ home_team_name }}</div>
+      <div>{{ event_time }} (EST)</div>
+      <div>{{ status }}</div>
+    </div>
+  {{ /game }}
+</script>
+
+<script type="text/javascript">
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.format("mm");
+  var day = now.format("dd");
+  var yesterday = parseInt(day, 10);
+  yesterday--;
+
+  // mustashe templates
+  // game now status
+  var playing_now_template = $('#playing-now-template').html();
+  Mustache.parse(playing_now_template);
+  // other games
+  var other_games_template = $('#other-games-template').html();
+  Mustache.parse(other_games_template);
+
+  // get info about today's games
+  $.getJSON("http://gd2.mlb.com/components/game/mlb/year_"+ year +"/month_"+ month +"/day_"+ day +"/grid.json", function(grid) {
+    // console.log("grid:", grid);
+    // find Dodger game
+    grid.data.games.game.forEach(function(game) {
+      // console.log("game:", game);
+      // console.log("game status:", game.status);
+      if (game.away_team_name === "Dodgers" || game.home_team_name === "Dodgers") {
+        // console.log("game:", game);
+        if (game.status === "In Progress") {
+          // set answer to "Yes."
+          game.playing_now = "Yes.";
+          // render playing now template real quick
+          var playing_now = Mustache.render(playing_now_template, game);
+          $('#playing-now').html(playing_now);
+        } else {
+          // console.log("game:", game);
+          // console.log("game status:", game.status);
+          // set answer to "No."
+          game.playing_now = "No.";      
+          game.no_but = "But don't worry, ";
+          // render playing now template real quick
+          var playing_now = Mustache.render(playing_now_template, game);
+          $('#playing-now').html(playing_now);
+          // console.log("gid:", game.id);
+          var gid = "gid_"+ game.id.split(/\/|-/).join('_');
+          // console.log("gid:", gid);
+          // get today's Dodger game details
+          $.getJSON("http://gd2.mlb.com/components/game/mlb/year_"+ year +"/month_"+ month +"/day_"+ day +"/"+ gid +"/linescore.json", function(linescore) {
+            // console.log("linescore:", linescore);
+            $('#game-location').text(linescore.data.game.location);
+            $('#game-time').text(linescore.data.game.home_time + linescore.data.game.home_ampm +" "+ linescore.data.game.home_time_zone);
+            // get yesterday's result
+            $.getJSON("http://gd2.mlb.com/components/game/mlb/year_"+ year +"/month_"+ month +"/day_"+ yesterday +"/grid.json", function(grid_yesterday) {
+              // console.log("grid_yesterday:", grid_yesterday);
+              grid_yesterday.data.games.game.forEach(function(game_yesterday) {
+                if (game_yesterday.away_team_name === "Dodgers" || game_yesterday.home_team_name === "Dodgers") {
+                  var gid_yesterday = "gid_"+ game_yesterday.id.split(/\/|-/).join('_');
+                  // console.log("gid_yesterday:", gid_yesterday);
+                  $.getJSON("http://gd2.mlb.com/components/game/mlb/year_"+ year +"/month_"+ month +"/day_"+ yesterday +"/"+ gid_yesterday +"/linescore.json", function(yesterday_linescore) {
+                    // console.log("yesterday_linescore:", yesterday_linescore);
+                    $('#yesterday-score-away').text(yesterday_linescore.data.game.away_team_runs);
+                    $('#yesterday-score-home').text(yesterday_linescore.data.game.home_team_runs);
+                    $('#yesterday-game-opponent').text(yesterday_linescore.data.game.away_team_city +", "+ yesterday_linescore.data.game.away_team_name);
+                  });
+                }
+              });
+            });
+          });
+        }
+      }
+    });
+    // render moustache template for games
+    var other_games = Mustache.render(other_games_template, grid.data.games);
+    $('#other-games').html(other_games);
+  });
+</script>
+</body>
+</html>

@@ -4,6 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>atdprn</title>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/semantic-ui/2.1.8/semantic.min.css">
+  <link rel="stylesheet" href="http://daigofuji.github.io/bbclub-font/css/bbclub-font.css">
   <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.min.js"></script>
   <script src="https://cdn.jsdelivr.net/semantic-ui/2.1.8/semantic.min.js"></script>
@@ -27,6 +28,21 @@
 
   <script id="playing-now-template-yes" type="x-tmpl-mustache">
     <h2 id="playing-now-status">{{ playing_now }}</h2>
+    <div class="ui stackable two column very relaxed grid container" style="position:relative;">
+      <div class="column">
+        <div class="ui segment">
+          <h1><i class="bb-{{ away_name_abbrev }}"></i></h1>
+        </div>
+      </div>
+      <div class="ui vertical divider">
+        @
+      </div>
+      <div class="column">
+        <div class="ui segment">
+          <h1><i class="bb-{{ home_name_abbrev }}"></i></h1>
+        </div>
+      </div>
+    </div>
   </script>
 
 </div>
@@ -74,7 +90,7 @@
       // console.log("game:", game);
       // console.log("game status:", game.status);
       if (game.away_team_name === "Dodgers" || game.home_team_name === "Dodgers") {
-        // console.log("game:", game);
+        console.log("game:", game);
         if (game.status === "In Progress") {
           // set answer to "Yes."
           game.playing_now = "Yes.";

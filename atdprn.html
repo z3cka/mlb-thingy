@@ -12,18 +12,12 @@
 </head>
 <body>
 <div class="ui vertical center aligned container">
-  <h1>Are the Dodgers playing right now?</h1>
+  <h1 class="ui center aligned header">Are the Dodgers playing right now?</h1>
   <div id="playing-now">good question, checking...</div>
 
   <script id="playing-now-template-no" type="x-tmpl-mustache">
     <h2 id="playing-now-status">{{ playing_now }}</h2>
-    <div class="ui hidden divider"></div>
-    <div>
-      They play next in <strong><span id="game-location">loading location...</span></strong> at <strong><span id="game-time">loading time...</span></strong>.
-    </div>
-    <div>
-      And hey, they won yesterday <strong><span id="yesterday-score-away">...</span> - <span id="yesterday-score-home">...</span></strong> over the <strong><span id="yesterday-game-opponent">...</span></strong>.
-    </div>
+    <i>{{ no_but }}</i>
   </script>
 
   <script id="playing-now-template-yes" type="x-tmpl-mustache">
@@ -31,15 +25,15 @@
     <div class="ui stackable two column very relaxed grid container" style="position:relative;">
       <div class="column">
         <div class="ui segment">
-          <h1><i class="bb-{{ away_name_abbrev }}"></i></h1>
+          <h1><i class="bb-{{ away_name_abbrev }} bb-5x"></i></h1>
+          <div>{{ away_score }}</div>
         </div>
       </div>
-      <div class="ui vertical divider">
-        @
-      </div>
+      <div class="ui vertical divider">@</div>
       <div class="column">
         <div class="ui segment">
-          <h1><i class="bb-{{ home_name_abbrev }}"></i></h1>
+          <h1><i class="bb-{{ home_name_abbrev }} bb-5x"></i></h1>
+          <div>{{ home_score }}</div>`
         </div>
       </div>
     </div>
@@ -48,18 +42,35 @@
 </div>
 <div class="ui hidden divider"></div>
 <div class="ui vertical center aligned container">
-  <h2>Here are some other not as good games happening today:</h2>
-  <div id="other-games" class="ui four column doubling stackable grid container">
+  <h2 class="ui center aligned header">Here are some other not as good games happening today:</h2>
+  <div id="other-games" class="ui four stackable cards">
     Loading other stupid games...
   </div>
 </div>
 
 <script id="other-games-template" type="x-tmpl-mustache">
   {{ #game }}
-    <div class="column">
-      <div>{{ away_team_name }} @ {{ home_team_name }}</div>
-      <div>{{ event_time }} (EST)</div>
-      <div>{{ status }}</div>
+    <div class="card">
+    <div class="content">
+      <div class="ui two column grid">
+        <div class="column">
+          <div class="ui">
+            <div><i class="bb-{{ away_name_abbrev }} bb-3x"></i></div>
+            <div>{{ away_score }}</div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="ui">
+            <div><i class="bb-{{ home_name_abbrev }} bb-3x"></i></div>
+            <div>{{ away_score }}</div>
+          </div>  
+        </div>
+      </div>
+      <div class="extra">
+        <div>{{ status }}</div>
+        <div>{{ event_time }} (EST)</div>
+      </div>
+    </div>
     </div>
   {{ /game }}
 </script>
@@ -102,7 +113,7 @@
           // console.log("game status:", game.status);
           // set answer to "No."
           game.playing_now = "No.";      
-          game.no_but = "But don't worry, ";
+          game.no_but = "But don't worry, there's always beer.";
           // render playing now template real quick
           var playing_now = Mustache.render(playing_now_template_no, game);
           $('#playing-now').html(playing_now);
@@ -139,5 +150,20 @@
     $('#other-games').html(other_games);
   });
 </script>
+<style>
+  .last.container {
+    margin-bottom: 300px !important;
+  }
+  h1.ui.center.header {
+    margin-top: 2em;
+  }
+  h2.ui.center.header {
+    margin: 1em 0em 2em;
+  }
+  h3.ui.center.header {
+    margin-top: 2em;
+    padding: 2em 0em;
+  }
+</style>
 </body>
 </html>

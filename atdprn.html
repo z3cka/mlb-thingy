@@ -14,7 +14,7 @@
   <h1>Are the Dodgers playing right now?</h1>
   <div id="playing-now">good question, checking...</div>
 
-  <script id="playing-now-template" type="x-tmpl-mustache">
+  <script id="playing-now-template-no" type="x-tmpl-mustache">
     <h2 id="playing-now-status">{{ playing_now }}</h2>
     <div class="ui hidden divider"></div>
     <div>
@@ -23,6 +23,10 @@
     <div>
       And hey, they won yesterday <strong><span id="yesterday-score-away">...</span> - <span id="yesterday-score-home">...</span></strong> over the <strong><span id="yesterday-game-opponent">...</span></strong>.
     </div>
+  </script>
+
+  <script id="playing-now-template-yes" type="x-tmpl-mustache">
+    <h2 id="playing-now-status">{{ playing_now }}</h2>
   </script>
 
 </div>
@@ -54,8 +58,10 @@
 
   // mustashe templates
   // game now status
-  var playing_now_template = $('#playing-now-template').html();
-  Mustache.parse(playing_now_template);
+  var playing_now_template_no = $('#playing-now-template-no').html();
+  Mustache.parse(playing_now_template_no);
+  var playing_now_template_yes = $('#playing-now-template-yes').html();
+  Mustache.parse(playing_now_template_yes);
   // other games
   var other_games_template = $('#other-games-template').html();
   Mustache.parse(other_games_template);
@@ -73,7 +79,7 @@
           // set answer to "Yes."
           game.playing_now = "Yes.";
           // render playing now template real quick
-          var playing_now = Mustache.render(playing_now_template, game);
+          var playing_now = Mustache.render(playing_now_template_yes, game);
           $('#playing-now').html(playing_now);
         } else {
           // console.log("game:", game);
@@ -82,7 +88,7 @@
           game.playing_now = "No.";      
           game.no_but = "But don't worry, ";
           // render playing now template real quick
-          var playing_now = Mustache.render(playing_now_template, game);
+          var playing_now = Mustache.render(playing_now_template_no, game);
           $('#playing-now').html(playing_now);
           // console.log("gid:", game.id);
           var gid = "gid_"+ game.id.split(/\/|-/).join('_');

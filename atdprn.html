@@ -42,7 +42,7 @@
 </div>
 <div class="ui hidden divider"></div>
 <div class="ui vertical center aligned container">
-  <h2 class="ui center aligned header">Here are some other not as good games happening today:</h2>
+  <h2 class="ui center aligned header">Today's Games:</h2>
   <div id="other-games" class="ui four stackable cards">
     Loading other stupid games...
   </div>
@@ -50,27 +50,23 @@
 
 <script id="other-games-template" type="x-tmpl-mustache">
   {{ #game }}
-    <div class="card">
-    <div class="content">
-      <div class="ui two column grid">
-        <div class="column">
-          <div class="ui">
+    <div class="ui {{ color }} header card">
+      <div class="content">
+        <div class="ui two column grid">
+          <div class="column">
             <div><i class="bb-{{ away_name_abbrev }} bb-3x"></i></div>
             <div>{{ away_score }}</div>
           </div>
-        </div>
-        <div class="column">
-          <div class="ui">
+          <div class="column">
             <div><i class="bb-{{ home_name_abbrev }} bb-3x"></i></div>
             <div>{{ away_score }}</div>
-          </div>  
+          </div>
+        </div>
+        <div class="extra">
+          <div>{{ status }}</div>
+          <div>{{ event_time }} (EST)</div>
         </div>
       </div>
-      <div class="extra">
-        <div>{{ status }}</div>
-        <div>{{ event_time }} (EST)</div>
-      </div>
-    </div>
     </div>
   {{ /game }}
 </script>
@@ -102,6 +98,8 @@
       // console.log("game status:", game.status);
       if (game.away_team_name === "Dodgers" || game.home_team_name === "Dodgers") {
         console.log("game:", game);
+        // add a little Dodger blue
+        game.color = "blue";
         if (game.status === "In Progress") {
           // set answer to "Yes."
           game.playing_now = "Yes.";

@@ -19,7 +19,7 @@
 
   <script id="playing-now-template-no" type="x-tmpl-mustache">
     <h2 id="playing-now-status">{{ playing_now }}</h2>
-    <div class="content"><i>The Boys in Blue need a day to travel to Atlanta.</i></div>
+    <div class="content"><i>{{ no_but }}</i></div>
   </script>
 
   <script id="playing-now-template-yes" type="x-tmpl-mustache">
@@ -146,6 +146,12 @@
             // });
           });
         }
+      } else {
+        // no Dodger game today
+        game.playing_now = "No.";
+        game.no_but = "The Boys in Blue need a day to travel to Atlanta. See you tomorrow.";
+        var playing_now = Mustache.render(playing_now_template_no, game);
+        $('#playing-now').html(playing_now);
       }
       // get inning state
       if (game.top_inning === "Y") {

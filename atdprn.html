@@ -20,12 +20,6 @@
   <script id="playing-now-template-no" type="x-tmpl-mustache">
     <h2 id="playing-now-status">{{ playing_now }}</h2>
     <div class="content"><i>{{ no_but }}</i></div>
-    <div class="ui horizontal divider hidden"></div>
-    <style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>
-    <div class='embed-container'>
-      <iframe src='https://drive.google.com/a/sey.gr/file/d/0B9zU7nHe62RfWlN6QWRXYWxqNnM/preview' frameborder='0' allowfullscreen></iframe>
-    </div>
-    <div>We sure had fun at the game yesterday!</div>
   </script>
 
   <script id="playing-now-template-yes" type="x-tmpl-mustache">
@@ -155,7 +149,7 @@
       } else {
         // no Dodger game today
         game.playing_now = "No.";
-        game.no_but = "The Boys in Blue need a day to travel to Atlanta. See you tomorrow.";
+        game.no_but = "But I'm sure they will play again soon.";
         var playing_now = Mustache.render(playing_now_template_no, game);
         $('#playing-now').html(playing_now);
       }

@@ -102,17 +102,18 @@
       // console.log("game:", game);
       // console.log("game status:", game.status);
       if (game.away_team_name === "Dodgers" || game.home_team_name === "Dodgers") {
-        // console.log("game:", game);
         // add a little Dodger blue
         game.color = "blue";
         if (game.status === "In Progress") {
+          // console.log("game:", game);
           // set answer to "Yes."
           game.playing_now = "Yes.";
           // render playing now template real quick
           var playing_now = Mustache.render(playing_now_template_yes, game);
+          // console.log("playing_now:", playing_now);
           $('#playing-now').html(playing_now);
         } else {
-          // console.log("game:", game);
+          console.log("game(else):", game);
           // console.log("game status:", game.status);
           // set answer to "No."
           game.playing_now = "No.";      
@@ -147,11 +148,12 @@
           });
         }
       } else {
+        // TODO: find condition for off day
         // no Dodger game today
-        game.playing_now = "No.";
-        game.no_but = "But I'm sure they will play again soon.";
-        var playing_now = Mustache.render(playing_now_template_no, game);
-        $('#playing-now').html(playing_now);
+        // game.playing_now = "No.";
+        // game.no_but = "But I'm sure they will play again soon.";
+        // var playing_now = Mustache.render(playing_now_template_no, game);
+        // $('#playing-now').html(playing_now);
       }
       // get inning state
       if (game.top_inning === "Y") {

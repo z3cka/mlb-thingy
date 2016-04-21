@@ -28,17 +28,19 @@
       <div class="column">
         <div class="ui segment">
           <h1><i class="bb-{{ away_name_abbrev }} bb-5x"></i></h1>
-          <div>{{ away_score }}</div>
+          <div class="bb-3x">{{ away_score }}</div>
         </div>
       </div>
       <div class="ui vertical divider">@</div>
       <div class="column">
         <div class="ui segment">
           <h1><i class="bb-{{ home_name_abbrev }} bb-5x"></i></h1>
-          <div>{{ home_score }}</div>`
+          <div class="bb-3x">{{ home_score }}</div>
         </div>
       </div>
     </div>
+    <h2><i class="{{ inning_state }}"></i> {{ inning }}</h2>
+    <div class="ui divider"></div>
   </script>
 
 </div>
@@ -108,9 +110,15 @@
         // add a little Dodger blue
         game.color = "blue";
         if (game.status === "In Progress") {
-          // console.log("game:", game);
+          console.log("game:", game);
           // set answer to "Yes."
           game.playing_now = "Yes.";
+          // get inning state
+          if (game.top_inning === "Y") {
+            game.inning_state = "caret up icon";
+          } else if (game.top_inning === "N") {
+            game.inning_state = "caret down icon";
+          }
           // render playing now template real quick
           var playing_now = Mustache.render(playing_now_template_yes, game);
           // console.log("playing_now:", playing_now);

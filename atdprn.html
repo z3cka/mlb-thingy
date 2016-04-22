@@ -15,7 +15,10 @@
 <body>
 <div class="ui vertical center aligned container">
   <h1 class="ui center aligned header">Are the Dodgers playing right now?</h1>
-  <div id="playing-now">good question, checking...</div>
+  <div id="playing-now">
+    <p>good question, checking...</p>
+    <div class="ui active centered small inline loader"></div>
+  </div>
 
   <script id="playing-now-template-no" type="x-tmpl-mustache">
     <h2 id="playing-now-status">{{ playing_now }}</h2>
@@ -40,6 +43,29 @@
       </div>
     </div>
     <h2><i class="{{ inning_state }}"></i> {{ inning }}</h2>
+    <div class="ui divider"></div>
+  </script>
+
+  <script id="playing-now-template-final" type="x-tmpl-mustache">
+    <h2 id="playing-now-status">{{ playing_now }}</h2>
+    <div class="content"><i>{{ no_but }}</i></div>
+    <div class="ui hidden divider"></div>
+    <div class="ui stackable two column very relaxed grid container" style="position:relative;">
+      <div class="column">
+        <div class="ui segment">
+          <h1><i class="bb-{{ away_name_abbrev }} bb-5x"></i></h1>
+          <div class="bb-3x">{{ away_score }}</div>
+        </div>
+      </div>
+      <div class="ui vertical divider">@</div>
+      <div class="column">
+        <div class="ui segment">
+          <h1><i class="bb-{{ home_name_abbrev }} bb-5x"></i></h1>
+          <div class="bb-3x">{{ home_score }}</div>
+        </div>
+      </div>
+    </div>
+    <h2>Final {{ extra }}</h2>
     <div class="ui divider"></div>
   </script>
 
@@ -85,7 +111,7 @@
   var day = now.format("dd");
   var yesterday = parseInt(day, 10);
   yesterday--;
-
+  
   // mustashe templates
   // game now status
   var playing_now_template_no = $('#playing-now-template-no').html();
@@ -110,7 +136,7 @@
         // add a little Dodger blue
         game.color = "blue";
         if (game.status === "In Progress") {
-          console.log("game:", game);
+          // console.log("game:", game);
           // set answer to "Yes."
           game.playing_now = "Yes.";
           // get inning state
@@ -128,12 +154,32 @@
           game.no_but = "The game shall begin shortly.";
           var playing_now = Mustache.render(playing_now_template_no, game);
           $('#playing-now').html(playing_now);
+        } else if (game.status === "Game Over") {
+          game.playing_now = "No, but it just ended.";
+          game.no_but = "Results:"
+          var playing_now = Mustache.render(playing_now_template_no, game);
+          $('#playing-now').html(playing_now);
+        } else if (game.status === "Final") {
+          game.playing_now = "No, they already played today.";
+          game.no_but = "Here are the results:"
+          // if free baseball
+          if (game.inning > 9) {
+            console.log("extra? yep");
+            game.extra = '('+ game.inning +')';
+            console.log("game:", game);
+          } else {
+            game.inning = '';
+          }
+          var playing_now_template_final = $('#playing-now-template-final').html();
+          var playing_now = Mustache.render(playing_now_template_final, game);
+          $('#playing-now').html(playing_now);
         } else {
           // console.log("game(else):", game);
           // console.log("game status:", game.status);
           // set answer to "No."
           game.playing_now = "No.";      
-          game.no_but = "But don't worry, there's always beer.";
+          // game.no_but = "But you can always... "+ stupid[stupid_random];
+          game.no_but = "But you can always... "+ getStupidThing(day);
           // render playing now template real quick
           var playing_now = Mustache.render(playing_now_template_no, game);
           $('#playing-now').html(playing_now);
@@ -183,6 +229,125 @@
     $('#other-games').html(other_games);
     });
   }
+  // get stupid things to do
+  function getStupidThing(day) {
+    // day = 01;
+    // console.log("day:", day);
+    var stupid = [
+      'Point at someone and shout "Your one of them!" Run and pretend to trip. Crawl away slowly.',
+      'Run up to someone random on the street and slap them with a loaf of bread.',
+      'Look at see through glass and when someone is on the other side shout "OH MY GOD, I\'M HIDEOUS!"',
+      'Go to McDonalds and ask for a happy meal with extra happy.',
+      'Walk up to a small child that resembles you, and tell them that you are them from the future.',
+      'Bring a desk on an elevator. When people try to get on ask if they have an appointment.',
+      'Put a dora doll in the middle of Walmart.When someone tries to pick it up yell "SWIPER NO SWIPING".',
+      'Go up to a random lady with a daughter and say her son is adorable.',
+      'Go to a libary and ask for a book on how to read.',
+      'Come late to school and when the teacher asks why say your pet rock had a seizure.',
+      'and see what happens.',
+      'Blow up a balloon, then ask someone to pop it, when they do, start screaming.',
+      'Fill your mouth with whipped cream, then run down the street screaming "I HAVE RABIES".',
+      'If skinny people skinny dip what do fat people do? Chunky Dunk?',
+      'Go to petsmart and buy bird seed. Then ask the clerk how long it will take the birds to grow.',
+      'Go to walmart, find a random old guy and yell, "GRANDPA! YOUR STILL ALIVE! ITS A MIRACLE".',
+      'Shout "For Narnia!" and charge into a store, knocking over everything in your way.',
+      'Throw a watermelon in front of someone. Then get on your knees, grab your hair and scream "NOOO!"',
+      'Throw a small plastic ball at some body and then yell "get in your ball you stupid pokemon.',
+      'Sit on a curb with a stuffed animal and scream at it about how it ruined your life.',
+      'Run through a police station and yell " I finally escaped from prison!" .',
+      'Go to a Chinese restaruant and ask for Mexican food.',
+      'Buy an ice cream, ask the cashier if they believe in unicorns then squish the cone on your forehead.',
+      'Buy an ice cream cone, stick it on top of someone\'s head and yell "Why did you steal my ice cream?"',
+      'Dress up like a grandma and break dance in walmart.',
+      'Go to weigth wachers with a bag of cookies.',
+      'Tie hotwheels cars to the bottom of your cat/dog\'s feet.',
+      'Go up to random people at the mall, show them your ID, and say, "HAVE YOU SEEN THIS MAN?!"',
+      'Name your hair George, then go to the salon and be upstet that they killed him.',
+      'Call someone to tell them you can\'t talk right now.',
+      'Go to to a fast food restraunt and ask for a krabby patty, i they say no throw a fit.',
+      'Glue yourself to the ceiling and when someone walks by spit on them.',
+      'Run up to someone in Walmart and say U AINT GOT NO PANCAKE MIX!',
+      'Tell your dad in a public place- "Look, old man, I don\'t want your candy!"',
+      'In a public place, hold up a box of cheerios and yell "FREE DONUT SEEDS!".',
+      'Make "No Dumping - Violators Will Be Prosecuted" signs and put them in public bathroom stalls.',
+      'Dress up as ronald mcdonald and go to burger king.',
+      'Sit in a cardboard box and yell at people who walk by that they\'re trespassing!',
+      'When The Money Comes Out The ATM, Scream "I Won!, I Won!" "I Won!, I Won!"',
+      'Go to an Italian restaurant dressed up as Mario. See what happens.',
+      'Call a chicken place and ask how big there breast are.',
+      'Go to mc. donalds and ask for fries without the potatos.',
+      'Sing to public plants if anyone asks what you\'re doing scream and run.',
+      'Go to a clothes store, go in the front window and pretend to be a manikin.',
+      'Sniff a random person then stare at them for a while then say "your one of them".',
+      'Go to a cloths store, walk into the dressing room. Walk out and ask where the toilet paper is!',
+      'Tie a rock to a string and take it for a walk. Every now and then yell "Bad boy, Fluffy!"',
+      'Go to a airport and say Can I go in your suitcase to every person you see.',
+      'Go up to a really buff man and hug him yelling GRANDMAMA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+      'Go in an elevator and then make peek-a-boo sounds when the doors open and close.',
+      'Put a computer mouse in a mouse trap.',
+      'Go to a pet shop, buy birdseed, and ask how long it will take to grow.',
+      'Follow strangers around a store and spray everything they touch with disinfectant.',
+      'Go to kfc and ask the way to mcdonalds.',
+      'KLFHJNEAJHVHJSAFVJHLASGKJDZFFJE...sorry there was just a spider on the keyboard.',
+      'Call a random phone number and yell, "Where is my fried chicken dude?!"',
+      'Tape your nose up like a pig, and protest bacon at the grocery store.',
+      'Find a midget on a street ask him to go up to people and say can i hav $20 I\'m a bit short.',
+      'Walk around the mall five times talking to a carrot and see how many people look at you funny.',
+      'Go to your teacher and say i know what you did last night.',
+      'Dress up as ronald mcdonald and go aplpy for a job at burger king.',
+      'Stand on the side of the road with a hair dryer and point it at cars.',
+      'Go to the cinema and shout "HE\'S THE MURDERER!" whenever someone new comes on screen.',
+      'Walk up to somebody and say "Im not wearing any pants" People will look down 99% of the time.',
+      'Go to mcdonalds and ask for directions to KFC.',
+      'In Wal-mart: Make a trail of orange juice on the ground, leading to the restrooms.',
+      'See if you can get a Wal-Mart clerk to sell you just one M&M.',
+      'Ring a random doorbell and when they answer just stare at them.',
+      'Make an old lady help you across the street.',
+      'Go to a clothing store, hide in a rack, and when people are browsing through, yell, "PICK ME!!!',
+      'Go to Wal-Mart, buy a cucumber and some KY jelly. Notice the look on the cashier\'s face.',
+      'Go to the store. Start Rolling around on the floor. Scream "Clean up on Aisle 3!"',
+      'Throw glue sticks at random people walking down the street and see if it sticks to them!',
+      'Ask a librarian if they have a book on learning to read.',
+      'Open a window and yell ITS MY MONEY AND I NEED IT NOW!',
+      'Ask the manager of a McDonalds where the nearest Burger King is.',
+      'Dress up as a superhero pretending to stop bank robbers.',
+      'Go to walmart, go to a dressing room, wait a few minutes and yell there is no toilet paper in here!',
+      'Spit at a llama...How does it feel NOW you Darn LLAMA!',
+      'Hire a taxi. When the man asks you where you want to go, say "To infinity, and beyond".',
+      'Enter an elevator with people and sing and dance to "Peanut Butter Jelly Time."',
+      'Ask pizza hut to deliver water.',
+      'Go around the city park licking trees and if anyone asks say youre marking your territory.',
+      'Go into a public bathroom and start singing "Taking Care of Business" very loudly.',
+      'Hide in a public bathroom stall and when someone walks in, say "Ah young one, Welcome to Narnia."".',
+      'Throw a pokemon ball at your teachers head and scream "gotta catch em all".',
+      'Go in to a public bathroom, go into a stall, wait a second, then scream, "Mommy I need help!',
+      'Go to a store, and leave a trail of orange juice leading to the bathrooms.',
+      'Wear blue lipstick and tell every one who asks why, that you ate a smurf.',
+      'Dress up as harry potter and stalk someone all day shouting random spells at them.',
+      'Go to mcdonalds and ask for directions to burgerking.',
+      'Put a lamp shade on your head and run around walmart.',
+      'Attack you neighbors with an army of garden knomes!',
+      'Convince a fat guy to give you 10,000$ for a giant cheese burger.',
+      'When in an elevator with only one other person,stare at them and breathe heavily.',
+      'Go to an atm machine and when the money comes out scream i win i win.',
+      'Go into a grocery store and scream at cheese.',
+      'Hide in a clothing rack in Walmart and when somebody goes by YELL "PICK ME PICK ME".',
+      'Walk around with a blow dryer and ask people if they want a blow job.',
+      'Go to McDonalds and order a diet water, drink it, do a spit take, and yell, I SAID DIET!'
+    ];
+    // TODO: pick a random stupid thing, but based on day
+    // var stupid_random = Math.floor(Math.random()*stupid.length);
+    // console.log("stupid_random:", stupid[stupid_random]);
+    // return stupid[stupid_random];
+    // return stupid thing based on what day it is
+    return stupid[day];
+  }
+
+  // TODO: WIP outs for main game
+  // function formatOuts(outs) {
+  //   if ()
+  // }
+
 </script>
 <style>
   .last.container {

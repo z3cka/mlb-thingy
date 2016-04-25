@@ -156,7 +156,7 @@
           $('#playing-now').html(playing_now);
         } else if (game.status === "Game Over") {
           game.playing_now = "No, but it just ended.";
-          game.no_but = "Results:"
+          game.no_but = "Results below."
           var playing_now = Mustache.render(playing_now_template_no, game);
           $('#playing-now').html(playing_now);
         } else if (game.status === "Final") {

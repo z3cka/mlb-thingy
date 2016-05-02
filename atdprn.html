@@ -70,11 +70,29 @@
   </script>
 
 </div>
+
 <div class="ui hidden divider"></div>
 <div class="ui vertical center aligned container">
   <h2 class="ui center aligned header">Today's Games:</h2>
   <div id="other-games" class="ui four doubling cards">
     Loading games...
+  </div>
+</div>
+
+<div class="ui hidden divider"></div>
+<div class="ui vertical footer segment">
+  <div class="ui center aligned container">
+    <div class="ui form">
+      <div class="inline field">
+        <!-- Target -->
+        <label><i class="share alternate icon"></i></label>
+        <input id="share-url" value="http://bit.ly/mlb-thingy-atdprn">
+        <!-- Trigger -->
+        <!-- <button class="btn" data-clipboard-target="#foo"> -->
+        <i class="btn-share-url-copy clipboard icon" data-clipboard-target="#share-url"></i>
+        <!-- </button> -->
+      </div>
+    </div>
   </div>
 </div>
 
@@ -369,5 +387,11 @@
     width: calc(25% - 2em);
   }
 </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+<script type="text/javascript">
+  new Clipboard('.btn-share-url-copy');
+</script>
+
 </body>
 </html>

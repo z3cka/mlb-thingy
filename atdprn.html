@@ -167,7 +167,7 @@
           var playing_now = Mustache.render(playing_now_template_yes, game);
           // console.log("playing_now:", playing_now);
           $('#playing-now').html(playing_now);
-        } else if (game.status === "Pre-Game") {
+        } else if (game.status === "Pre-Game" || game.status === "Warmup") {
           game.playing_now = "No, but get ready!";      
           game.no_but = "The game shall begin shortly.";
           var playing_now = Mustache.render(playing_now_template_no, game);

@@ -43,6 +43,23 @@
       </div>
     </div>
     <h2><i class="{{ inning_state }}"></i>{{ inning }} {{ inning_outs }}</h2>
+    <div class="ui center aligned container">
+      <table class="ui collapsing unstackable celled table">
+        <tbody>
+          <tr>
+            {{ #linescore_current }}
+              <td class="center aligned">{{ away_inning_runs }}</td>
+            {{ /linescore_current }}
+          </tr>
+          <tr>
+            {{ #linescore_current }}
+              <td class="center aligned">{{ home_inning_runs }}</td>
+            {{ /linescore_current }}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="ui divider"></div>
   </script>
 
@@ -66,6 +83,22 @@
       </div>
     </div>
     <h2>Final {{ extra }}</h2>
+    <div class="ui center aligned container">
+      <table class="ui collapsing unstackable celled table">
+        <tbody>
+          <tr>
+            {{ #linescore_current }}
+              <td class="center aligned">{{ away_inning_runs }}</td>
+            {{ /linescore_current }}
+          </tr>
+          <tr>
+            {{ #linescore_current }}
+              <td class="center aligned">{{ home_inning_runs }}</td>
+            {{ /linescore_current }}
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div class="ui divider"></div>
   </script>
 
@@ -182,6 +215,10 @@
                 game.inning_outs = "\u2022 \u2022 \u2022"; 
                 break;
             }
+            // build linescore
+            // game.linescore = linescore.data.game.linescore;
+            game.linescore_current = linescore.data.game.linescore;
+            // console.log("linescore_current", linescore_current);
             // render playing now template 
             var playing_now = Mustache.render(playing_now_template_yes, game);
             // console.log("playing_now:", playing_now);
@@ -195,8 +232,16 @@
         } else if (game.status === "Game Over") {
           game.playing_now = "No, but it just ended.";
           game.no_but = "Results below."
-          var playing_now = Mustache.render(playing_now_template_no, game);
-          $('#playing-now').html(playing_now);
+
+          // get more details about the game
+          var gid = "gid_"+ game.id.split(/\/|-/).join('_');
+          $.getJSON("http://gd2.mlb.com/components/game/mlb/year_"+ year +"/month_"+ month +"/day_"+ day +"/"+ gid +"/linescore.json", function(linescore) {
+            console.log("linescore:", linescore);
+            game.linescore_current = linescore.data.game.linescore;
+            // console.log("linescore_current:", linescore_current);
+            var playing_now = Mustache.render(playing_now_template_no, game);
+            $('#playing-now').html(playing_now);
+          });
         } else if (game.status === "Final") {
           game.playing_now = "No, they already played today.";
           game.no_but = "Here are the results:"
@@ -208,9 +253,17 @@
           } else {
             game.inning = '';
           }
-          var playing_now_template_final = $('#playing-now-template-final').html();
-          var playing_now = Mustache.render(playing_now_template_final, game);
-          $('#playing-now').html(playing_now);
+          // get more details about the game
+          var gid = "gid_"+ game.id.split(/\/|-/).join('_');
+          $.getJSON("http://gd2.mlb.com/components/game/mlb/year_"+ year +"/month_"+ month +"/day_"+ day +"/"+ gid +"/linescore.json", function(linescore) {
+            console.log("linescore:", linescore);
+            game.linescore_current = linescore.data.game.linescore;
+            // console.log("linescore_current:", linescore_current);
+            var playing_now_template_final = $('#playing-now-template-final').html();
+            console.log("game:", game);
+            var playing_now = Mustache.render(playing_now_template_final, game);
+            $('#playing-now').html(playing_now);
+          });
         } else {
           // console.log("game(else):", game);
           // console.log("game status:", game.status);
@@ -261,6 +314,7 @@
         game.inning_state = "caret down icon";
       }
     });
+    // console.log("grid.data.games:", grid.data.games);
     // render moustache template for games
     var other_games = Mustache.render(other_games_template, grid.data.games);
     $('#other-games').html(other_games);

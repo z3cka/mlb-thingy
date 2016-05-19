@@ -83,9 +83,16 @@
       </div>
     </div>
     <h2>Final {{ extra }}</h2>
-    <div class="ui center aligned container">
+    <div class="ui center aligned container linescore">
       <table class="ui collapsing unstackable celled table">
         <tbody>
+          <thead>
+            <tr>
+              {{ #linescore_current }}
+                <th >{{ inning }}</th>
+              {{ /linescore_current }}
+            </tr>
+          </thead>
           <tr>
             {{ #linescore_current }}
               <td class="center aligned">{{ away_inning_runs }}</td>

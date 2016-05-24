@@ -26,7 +26,7 @@
     <h2 id="playing-now-status">{{ playing_now }}</h2>
     <div class="content">
       <i>{{ no_but }}</i>
-      <div>The next game starts in</div>
+      <div>The next game at <b>{{ event_time }} (EST)</b> starts in</div>
       <div class="timer"></div>
     </div>
   </script>
@@ -36,14 +36,14 @@
     <div class="ui stackable two column very relaxed grid container" style="position:relative;">
       <div class="column">
         <div class="ui segment">
-          <h1><i class="bb-{{ away_name_abbrev }} bb-5x"></i></h1>
+          <h1><i class="bb-{{ away_name_abbrev }} bb-5x"></i><span>({{ away_win }}-{{ away_loss }})</span></h1>
           <div class="bb-3x">{{ away_score }}</div>
         </div>
       </div>
       <div class="ui vertical divider">@</div>
       <div class="column">
         <div class="ui segment">
-          <h1><i class="bb-{{ home_name_abbrev }} bb-5x"></i></h1>
+          <h1><i class="bb-{{ home_name_abbrev }} bb-5x"></i><span>({{ home_win }}-{{ home_loss }})</span></h1>
           <div class="bb-3x">{{ home_score }}</div>
         </div>
       </div>
@@ -199,6 +199,7 @@
         // console.log("game:", game);
         // add a little Dodger blue
         game.color = "blue";
+        // game.status = "In Progress";
         if (game.status === "In Progress") {
           // console.log("game:", game);
           // set answer to "Yes."
@@ -230,8 +231,11 @@
             }
             // build linescore
             // game.linescore = linescore.data.game.linescore;
-            game.linescore_current = linescore.data.game.linescore;
-            // console.log("linescore_current", linescore_current);
+            game.away_win = linescore.data.game.away_win;
+            game.away_loss = linescore.data.game.away_loss;
+            game.home_win = linescore.data.game.home_win;
+            game.home_loss = linescore.data.game.home_loss;
+            console.log("game:", game);
             // render playing now template 
             var playing_now = Mustache.render(playing_now_template_yes, game);
             // console.log("playing_now:", playing_now);
@@ -289,16 +293,60 @@
           // console.log("game:", game)
 
           // get time of next game
-          var game_time = new Date("05/23/2016 "+ game.event_time);
+          // var game_time = new Date("05/24/2016 "+ game.event_time);
+          var game_time = new Date("05/24/2016 "+ game.event_time);
           // do math
           var ttg = Date.parse(game_time) - Date.now();
           ttg = ttg / 1000;
+          ttg = ttg - 10800;
+
+          // make a custom clock face
+          /*
+           * Hourly Counter sans seconds
+           */
+          FlipClock.HourlyCounterSansSecondsFace = FlipClock.Face.extend({
+            showSeconds: false,
+
+            /**
+             * Constructor
+             *
+             * @param  object  The parent FlipClock.Factory object
+             * @param  object  An object of properties to override the default
+             */
+            constructor: function(factory, options) {
+              this.base(factory, options);
+            },
+            /**
+             * Build the clock face
+             */ 
+            build: function(time) {
+              var t = this;
+              var children = this.factory.$el.find('ul');
+              var offset = 2;
+              // make the time array based on hours
+              time = time ? time : this.factory.time.getHourCounter(this.showSeconds);
+              // remove seconds from array
+              time.splice(time.length - 2, 2);
+
+              if(time.length > children.length) {
+                $.each(time, function(i, digit) {
+                  t.createList(digit);
+                });
+              }
+              $(this.createDivider('Minutes')).insertBefore(this.lists[this.lists.length - 4 + offset].$el);
+              $(this.createDivider('Hours')).insertBefore(this.lists[this.lists.length - 6 + offset].$el);
+
+              this.base();
+            }
+          });
+
           // set time until next game
-          var timer = $('.timer').FlipClock();         
-          timer.setTime(ttg - 10800);
-          // make it count down
-          timer.setCountdown(true);
-          // TODO: hide labels & clean up styles
+          var timer = $('.timer').FlipClock(ttg, {
+            // use timer Hourly timer without seconds
+            clockFace: 'HourlyCounterSansSeconds',
+            // make it count down
+            countdown: true,
+          });
 
           // console.log("gid:", game.id);
           var gid = "gid_"+ game.id.split(/\/|-/).join('_');
@@ -373,6 +421,16 @@
   .ui.four.doubling.cards .card {
     width: calc(25% - 2em);
   }
+  /*.flip-clock-label { display: none; }*/
+  .flip-clock-wrapper {
+    display: inline-block;
+    margin-top: 2em;
+    width: auto;
+  }
+  .flip-clock-wrapper .flip {
+    margin-bottom: .35em;
+  }
+
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>

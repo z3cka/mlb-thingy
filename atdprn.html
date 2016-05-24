@@ -5,12 +5,14 @@
   <title>atdprn</title>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/semantic-ui/2.1.8/semantic.min.css">
   <link rel="stylesheet" href="http://daigofuji.github.io/bbclub-font/css/bbclub-font.css">
+  <link rel="stylesheet" href="https://cdn.rawgit.com/objectivehtml/FlipClock/master/compiled/flipclock.css">
   <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
   <!-- <script src="http://underscorejs.org/underscore-min.js"></script>
   <script src="http://backbonejs.org/backbone-min.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.2.1/mustache.min.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/semantic-ui/2.1.8/semantic.min.js"></script> -->
   <script src="http://stevenlevithan.com/assets/misc/date.format.js"></script>
+  <script src="https://cdn.rawgit.com/objectivehtml/FlipClock/master/compiled/flipclock.min.js"></script>
 </head>
 <body>
 <div class="ui vertical center aligned container">
@@ -22,7 +24,11 @@
 
   <script id="playing-now-template-no" type="x-tmpl-mustache">
     <h2 id="playing-now-status">{{ playing_now }}</h2>
-    <div class="content"><i>{{ no_but }}</i></div>
+    <div class="content">
+      <i>{{ no_but }}</i>
+      <div>The next game starts in</div>
+      <div class="timer"></div>
+    </div>
   </script>
 
   <script id="playing-now-template-yes" type="x-tmpl-mustache">
@@ -280,6 +286,20 @@
           // render playing now template real quick
           var playing_now = Mustache.render(playing_now_template_no, game);
           $('#playing-now').html(playing_now);
+          // console.log("game:", game)
+
+          // get time of next game
+          var game_time = new Date("05/23/2016 "+ game.event_time);
+          // do math
+          var ttg = Date.parse(game_time) - Date.now();
+          ttg = ttg / 1000;
+          // set time until next game
+          var timer = $('.timer').FlipClock();         
+          timer.setTime(ttg - 10800);
+          // make it count down
+          timer.setCountdown(true);
+          // TODO: hide labels & clean up styles
+
           // console.log("gid:", game.id);
           var gid = "gid_"+ game.id.split(/\/|-/).join('_');
           // console.log("gid:", gid);
@@ -359,6 +379,6 @@
 <script type="text/javascript">
   new Clipboard('.btn-share-url-copy');
 </script>
-
+  <script src="https://cdn.rawgit.com/objectivehtml/FlipClock/master/compiled/flipclock.min.js"></script>
 </body>
 </html>

@@ -188,7 +188,7 @@
 
   // get info about today's games every 30 seconds
   getGrid();
-  var intervalID = window.setInterval(getGrid, 30000);
+  // var intervalID = window.setInterval(getGrid, 30000);
   function getGrid() {
     $.getJSON("http://gd2.mlb.com/components/game/mlb/year_"+ year +"/month_"+ month +"/day_"+ day +"/grid.json", function(grid) {
     // console.log("grid:", grid);
@@ -427,6 +427,7 @@
     margin-top: 2em;
     width: auto;
   }
+  .flip-clock-wrapper ul { width: 50px; }
   .flip-clock-wrapper .flip {
     margin-bottom: .35em;
   }
@@ -437,6 +438,6 @@
 <script type="text/javascript">
   new Clipboard('.btn-share-url-copy');
 </script>
-  <script src="https://cdn.rawgit.com/objectivehtml/FlipClock/master/compiled/flipclock.min.js"></script>
+<script src="https://cdn.rawgit.com/objectivehtml/FlipClock/master/compiled/flipclock.min.js"></script>
 </body>
 </html>

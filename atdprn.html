@@ -294,7 +294,7 @@
 
           // get time of next game
           // var game_time = new Date("05/24/2016 "+ game.event_time);
-          var game_time = new Date("05/24/2016 "+ game.event_time);
+          var game_time = new Date(now.format("mm/dd/yy") +" "+ game.event_time);
           // do math
           var ttg = Date.parse(game_time) - Date.now();
           ttg = ttg / 1000;

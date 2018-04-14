@@ -1,0 +1,5 @@
+review:
+ image: nginx
+ script:
+  - pwd
+  - ls -lah

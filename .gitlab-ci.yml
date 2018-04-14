@@ -3,3 +3,4 @@ review:
  script:
   - pwd
   - ls -lah
+  - ls -lah /usr/share/nginx/html

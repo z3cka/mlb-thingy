@@ -1,6 +1,16 @@
-review:
- image: nginx
+stages:
+ - build
+ - review
+ 
+build:
+ stage: build
+ before_script:
+  - echo $CI_BUILD_REF_NAME
  script:
-  - pwd
-  - ls -lah
-  - ls -lah /usr/share/nginx/html
+  # - docker build -t z3cka/$CI_BUILD_REF_NAME .
+  - docker build -t z3cka/atdprn .
+
+review:
+ stage: review
+ script:
+  - ./run-review.sh

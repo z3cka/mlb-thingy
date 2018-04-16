@@ -15,3 +15,8 @@ review:
  script:
   - chmod +x ./run-review.sh
   - ./run-review.sh
+ environment:
+  name: review/atdprn
+  url: http://atdprn.gitlab.loaderboater.com:58416/
+  # on_stop: stop_review
+  # TODO: add stop review

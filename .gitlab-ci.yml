@@ -13,4 +13,5 @@ build:
 review:
  stage: review
  script:
+  - chmod +x ./run-review.sh
   - ./run-review.sh

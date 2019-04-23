@@ -44,7 +44,7 @@ export default {
         const res = await rec.json()
         this.sched = res
         return res
-      } catch (err) {
+      } catch (err) { // eslint-disable-next-line
         console.error(err)
       }
     }

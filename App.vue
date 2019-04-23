@@ -1,0 +1,54 @@
+<template>
+  <div>
+    <h1>Who's gonna win?</h1>
+    <div>
+      <h2>Things to Do</h2>
+      <ul>
+        <li>[x] fetch games</li>
+        <li>[x] list games</li>
+        <li>[x] list scores</li>
+        <li>[ ] list win probability</li>
+      </ul>
+      <h2>Games</h2>
+      <ul v-if="sched">
+        <li
+          v-for="game in sched.dates[0].games"
+          :key="game.gamePk"
+        >
+          {{ game.teams.away.team.name }} ({{ game.teams.away.leagueRecord.wins }}-{{ game.teams.away.leagueRecord.losses }}), {{ game.teams.away.score }} @ {{ game.teams.home.team.name }}  ({{ game.teams.home.leagueRecord.wins }}-{{ game.teams.home.leagueRecord.losses }}), {{ game.teams.home.score }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+import dayjs from 'dayjs'
+
+export default {
+  name: 'App',
+  data() {
+    return {
+      currentDay: '',
+      sched: null
+    }
+  },
+  mounted () {
+    // let currentDay = dayjs().subtract(1, 'day').format('YYYY-MM-DD')
+    let currentDay = dayjs().format('YYYY-MM-DD')
+    this.getGames(currentDay)
+  },
+  methods: {
+    async getGames(date) {
+      try {
+        const rec = await fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1,51&date=${date}`)
+        const res = await rec.json()
+        this.sched = res
+        return res
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  },
+}
+</script>

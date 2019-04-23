@@ -34,7 +34,6 @@ export default {
     }
   },
   mounted () {
-    // let currentDay = dayjs().subtract(1, 'day').format('YYYY-MM-DD')
     let currentDay = dayjs().format('YYYY-MM-DD')
     this.getGames(currentDay)
   },

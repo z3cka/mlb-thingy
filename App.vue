@@ -9,13 +9,13 @@
         <li>[x] list scores</li>
         <li>[ ] list win probability</li>
       </ul>
-      <h2>Games</h2>
+      <h2>Today's Games</h2>
       <ul v-if="sched">
         <li
           v-for="game in sched.dates[0].games"
           :key="game.gamePk"
         >
-          {{ game.teams.away.team.name }} ({{ game.teams.away.leagueRecord.wins }}-{{ game.teams.away.leagueRecord.losses }}), {{ game.teams.away.score }} @ {{ game.teams.home.team.name }}  ({{ game.teams.home.leagueRecord.wins }}-{{ game.teams.home.leagueRecord.losses }}), {{ game.teams.home.score }}
+          {{ parseGameTime(game.gameDate) }} — {{ game.teams.away.team.name }} ({{ game.teams.away.leagueRecord.wins }}-{{ game.teams.away.leagueRecord.losses }}), {{ game.teams.away.score }} @ {{ game.teams.home.team.name }}  ({{ game.teams.home.leagueRecord.wins }}-{{ game.teams.home.leagueRecord.losses }}), {{ game.teams.home.score }} — {{ game.status.abstractGameState }}, {{ game.linescore.inningState }} {{ game.linescore.currentInning }}
         </li>
       </ul>
     </div>
@@ -40,13 +40,17 @@ export default {
   methods: {
     async getGames(date) {
       try {
-        const rec = await fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1,51&date=${date}`)
-        const res = await rec.json()
+        const req = await fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1,51&date=${date}&hydrate=linescore(matchup,runners)`)
+        const res = await req.json()
         this.sched = res
         return res
       } catch (err) { // eslint-disable-next-line
         console.error(err)
       }
+    },
+    parseGameTime(gameDate) {
+      const parsedGameTime = dayjs(gameDate).format('h:mm a')
+      return parsedGameTime
     }
   },
 }

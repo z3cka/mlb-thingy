@@ -30,7 +30,8 @@ export default {
   data() {
     return {
       currentDay: '',
-      sched: null
+      sched: null,
+      gameWinProbability: []
     }
   },
   mounted () {
@@ -48,9 +49,26 @@ export default {
         console.error(err)
       }
     },
+    async getGameWinProbability(gamePk) {
+      try {
+        const req = await fetch(`https://statsapi.mlb.com/api/v1/game/${gamePk}/winProbability`)
+        const res = await req.json()
+        this.gameWinProbability = res
+        return res
+      } catch (err) { // eslint-disable-next-line
+        console.error(err)
+      }
+    },
     parseGameTime(gameDate) {
       const parsedGameTime = dayjs(gameDate).format('h:mm a')
       return parsedGameTime
+    }
+  },
+  watch: {
+    sched: function (newValue, oldValue) {
+      newValue.dates[0].games.forEach(game => {
+        this.getGameWinProbability(game.gamePk)
+      });
     }
   },
 }

@@ -1,14 +1,21 @@
 <template>
   <div>
-    <h1>Are the Dodgers Playing Right Now?</h1>
-    <div>No.</div>
+    <h1>Are the {{ teamName }} Playing Right Now?</h1>
+    <div>{{ arePlaying ? 'Yes' : 'No '}}</div>
   </div>
 </template>
 
 <script>
 export default {
-    setup() {
-        
+  props: {
+    arePlaying: {
+      type: Boolean,
+      required: true,
     },
+    teamName: {
+      type: String,
+      required: true,
+    }
+  },
 }
 </script>
